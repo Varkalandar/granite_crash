@@ -7,7 +7,7 @@ local function add(x, y, c)
 
   mover.x = x
   mover.y = y
-  mover.dx = 1
+  mover.dx = -1
   mover.dy = 0
   mover.xoff = -31
   mover.yoff = 0
@@ -21,24 +21,32 @@ local function add(x, y, c)
 end
 
 
-local function collisions(map, player)
-
+local function get(x, y)
   for i, mob in ipairs(swarm.mobs) do
-    if mob.x == player.x and mob.y == player.y then
-      
-      sounds.randplay(sounds.bang, 1, 0)
-      player.alive = false
-      
-      if mob.type == map.M_BOMBER then      
-        map.fill(mob.x, mob.y, map.M_SPACE)
-      else
-        map.fill(mob.x, mob.y, map.M_DIAMOND)      
-      end
-      
+    if mob.x == x and mob.y == y then
+      return mob
+    end
+  end    
+end
+
+
+local function remove(x, y)
+  for i, mob in ipairs(swarm.mobs) do
+    if mob.x == x and mob.y == y then
       table.remove(swarm.mobs, i)
     end
+  end    
+end
+
+
+local function collisions(map, player, gameUi)
+
+  for i, mob in ipairs(swarm.mobs) do
+    if mob.x == player.x and mob.y == player.y then      
+      player.alive = false
+      gameUi.explode(mob.x, mob.y, mob.type)
+    end
   end
-  
 end
 
 
@@ -148,6 +156,8 @@ swarm.update = update
 swarm.draw = draw
 
 swarm.add = add
+swarm.get = get
+swarm.remove = remove
 swarm.collisions = collisions
 
 return swarm

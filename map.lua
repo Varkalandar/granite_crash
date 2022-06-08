@@ -7,6 +7,9 @@ local map =
   M_SPACE = string.byte(" "),
   M_EARTH = string.byte("."),
   M_DIAMOND = string.byte("x"),
+  M_ROCK = string.byte("O"),
+  M_WALL = string.byte("="),
+  M_METAL = string.byte("#"),
   M_BOMBER = string.byte("W"),
   M_REWARD = string.byte("X"),
   M_PLAYER = string.byte("P")
@@ -16,7 +19,7 @@ local map =
 local function getCell(x, y)
   local n = 3 + y*81 + x
   
-  if n >= 0 and n < 3245 then
+  if n >= 3 and n < 3243 then
     return map.data[n]  
   end
   
@@ -27,7 +30,7 @@ end
 local function setCell(x, y, c)
   local n = 3 + y*81 + x
   
-  if n >= 0 and n < 3245 then
+  if n >= 3 and n < 3243 then
     map.data[n] = c
   end
 end
@@ -50,12 +53,12 @@ local function loadTiles(path)
   local quads = {}
   local w = 32;
   
-  quads[string.byte("#")] = love.graphics.newQuad(8*w, 0*w, w, w, 12*w, 2*w)
+  quads[map.M_METAL] = love.graphics.newQuad(8*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_EARTH] = love.graphics.newQuad(4*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_PLAYER] = love.graphics.newQuad(1*w, 0*w, w, w, 12*w, 2*w)
-  quads[string.byte("O")] = love.graphics.newQuad(5*w, 0*w, w, w, 12*w, 2*w)
+  quads[map.M_ROCK] = love.graphics.newQuad(5*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_DIAMOND] = love.graphics.newQuad(6*w, 0*w, w, w, 12*w, 2*w)
-  quads[string.byte("=")] = love.graphics.newQuad(7*w, 0*w, w, w, 12*w, 2*w)
+  quads[map.M_WALL] = love.graphics.newQuad(7*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_BOMBER] = love.graphics.newQuad(0*w, 0*w, w-1, w-1, 12*w, 2*w)
   quads[map.M_REWARD] = love.graphics.newQuad(9*w, 0*w, w-1, w-1, 12*w, 2*w)
   
@@ -103,7 +106,7 @@ local function draw(xoff, yoff)
       
       local quad = map.quads[cell]
       
-      if(quad) then
+      if(quad and cell ~= map.M_ROCK and cell ~=map.M_DIAMOND) then
         love.graphics.draw(map.sprites, quad, 
                            xoff + x*map.raster, yoff + y*map.raster, 
                            0, 1, 1, 0, 0, 0, 0)

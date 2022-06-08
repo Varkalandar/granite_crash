@@ -1,7 +1,36 @@
 local player = require("player")
+local rocks = require("rocks")
 local swarm = require("swarm")
+local pixfont = require("pixfont")
 
 local gameUi = {}
+
+
+local function explode(x, y, type)
+  local map = gameUi.map
+  sounds.randplay(sounds.bang, 1, 0)
+
+  local c = map.M_DIAMOND  
+  if type == map.M_BOMBER then      
+    c = map.M_SPACE
+  end
+
+  for i=-1, 1 do
+    for j=-1, 1 do
+      local nx = x+i
+      local ny = y+j
+      
+      swarm.remove(nx, ny)
+      rocks.remove(nx, ny)
+      map.setCell(nx, ny, c)
+      
+      if c == map.M_DIAMOND then
+        rocks.add(nx, ny, c)
+      end
+    end
+  end
+end
+
 
 local function scanMap()
   local map = gameUi.map
@@ -16,13 +45,17 @@ local function scanMap()
       if cell == map.M_PLAYER then
         player.x = x
         player.y = y
-		    map.setCell(x, y, map.M_SPACE)
+		   map.setCell(x, y, map.M_SPACE)
 	    elseif cell == map.M_BOMBER then
 	      swarm.add(x, y, cell)
-		    gameUi.map.setCell(x, y, map.M_SPACE)
+		  map.setCell(x, y, map.M_SPACE)
 	    elseif cell == map.M_REWARD then
 	      swarm.add(x, y, cell)	  
-        gameUi.map.setCell(x, y, map.M_SPACE)
+          map.setCell(x, y, map.M_SPACE)
+	    elseif cell == map.M_ROCK then
+	      rocks.add(x, y, cell)	  
+	    elseif cell == map.M_DIAMOND then
+	      rocks.add(x, y, cell)	  
       end
     end
   end
@@ -32,9 +65,15 @@ end
 
 
 local function load(map)
-  gameUi.map = map
   player.load(map)
+  rocks.load(map)
   swarm.load(map)
+
+  gameUi.map = map
+  gameUi.swarm = swarm
+
+  -- pixfont = pixfont.init("resources/font/humanistic_128bbl")
+  pixfont = pixfont.init("resources/font/sans_serif")
   
   scanMap()
 end
@@ -43,8 +82,9 @@ end
 local function update(time, dt)
   local map = gameUi.map 
   map.update(time, dt)
-  player.update(time, dt, map.C_SPEED)
+  player.update(time, dt, rocks)
   swarm.update(time, dt, map.C_SPEED)
+  rocks.update(time, dt, player, gameUi)
 
   local vx = 0;
   local vy = 0;
@@ -69,7 +109,7 @@ local function update(time, dt)
     end
   end
   
-  swarm.collisions(map, player)  
+  swarm.collisions(map, player, gameUi)
 end
 
 
@@ -81,14 +121,19 @@ local function draw()
   xoff = math.floor(xoff - player.xoff)
   yoff = math.floor(yoff - player.yoff)
 
+  love.graphics.setColor(0.9, 0.9, 0.9, 1)
+
   gameUi.map.draw(xoff, yoff)
+  rocks.draw(xoff, yoff)
   swarm.draw(xoff, yoff)
   player.draw(400, 290)
 
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
-  love.graphics.print("Diamonds: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 690, 10)
+  -- love.graphics.print("Diamonds: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 690, 10)
   
+  love.graphics.setColor(0.5, 1.0, 0.0, 1)
+  pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 10, 0.3, 0.3)
 end
 
 
@@ -112,6 +157,8 @@ end
 gameUi.load = load
 gameUi.update = update
 gameUi.draw = draw
+
+gameUi.explode = explode
 
 gameUi.mousePressed = mousePressed
 gameUi.mouseReleased = mouseReleased
