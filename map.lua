@@ -9,7 +9,7 @@ local ffi = require("ffi")
 
 local map = 
 {
-  C_SPEED = 150,
+  C_SPEED = 160,
 
   M_SPACE = string.byte(" "),
   M_EARTH = string.byte("."),
@@ -25,9 +25,9 @@ local map =
 
 
 local function getCell(x, y)
-  local n = 3 + y*81 + x
+  local n = 87 + y*(map.columns+1) + x
   
-  if n >= 3 and n < 3243 then
+  if n >= 87 and n < 86 + (map.columns+1) * map.rows then
     return map.data[n]  
   end
   
@@ -36,9 +36,9 @@ end
 
 
 local function setCell(x, y, c)
-  local n = 3 + y*81 + x
+  local n = 87 + y*(map.columns+1) + x
   
-  if n >= 3 and n < 3243 then
+  if n >= 87 and n < 86 + (map.columns+1) * map.rows then
     map.data[n] = c
   end
 end
@@ -97,6 +97,10 @@ local function loadLevel(path, filename)
   -- map.data = ffi.cast('uint8_t*', bytes:getFFIPointer())
   map.data = ffi.cast('uint8_t*', bytes:getPointer())
   
+  map.columns = (map.data[81]-48) * 10 + (map.data[82]-48)
+  map.rows = (map.data[84]-48) * 10 + (map.data[85]-48)
+  
+  print("Map is " .. map.columns .. "x" .. map.rows)
 end
 
 
@@ -112,8 +116,8 @@ end
 
 local function draw(xoff, yoff)
   
-  for y=0, 39 do
-    for x=0, 79 do
+  for y=0, map.rows-1 do
+    for x=0, map.columns-1 do
       local cell = getCell(x, y)
       
       local quad = map.quads[cell]

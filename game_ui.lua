@@ -46,19 +46,19 @@ local function scanMap()
 
   -- print("PC=" .. pc)
 
-  for y=0, 39 do
-    for x=0, 79 do
+  for y=0, map.rows-1 do
+    for x=0, map.columns-1 do
       local cell = map.getCell(x, y)
       if cell == map.M_PLAYER then
         player.x = x
         player.y = y
-		   map.setCell(x, y, map.M_SPACE)
+		    map.setCell(x, y, map.M_SPACE)
 	    elseif cell == map.M_BOMBER then
 	      swarm.add(x, y, cell)
-		  map.setCell(x, y, map.M_SPACE)
+		    map.setCell(x, y, map.M_SPACE)
 	    elseif cell == map.M_REWARD then
 	      swarm.add(x, y, cell)	  
-          map.setCell(x, y, map.M_SPACE)
+        map.setCell(x, y, map.M_SPACE)
 	    elseif cell == map.M_ROCK then
 	      rocks.add(x, y, cell)	  
 	    elseif cell == map.M_DIAMOND then
