@@ -80,6 +80,8 @@ end
 
 
 local function update(time, dt)
+  gameUi.time = time
+  
   local map = gameUi.map 
   map.update(time, dt)
   player.update(time, dt, rocks)
@@ -105,7 +107,10 @@ local function update(time, dt)
   
     -- new move?
     if vx ~= 0 or vy ~= 0 then
-      player.go(time, vx, vy)
+      player.go(time, vx, vy, rocks)
+    else
+      player.push = 0
+      player.pushdir = 0
     end
   end
   
@@ -126,7 +131,7 @@ local function draw()
   gameUi.map.draw(xoff, yoff)
   rocks.draw(xoff, yoff)
   swarm.draw(xoff, yoff)
-  player.draw(400, 290)
+  player.draw(gameUi.time, 400, 290)
 
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 

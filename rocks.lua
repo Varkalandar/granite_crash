@@ -63,8 +63,8 @@ end
 
 
 local function slide(mob, delta, player)
-  mob.xoff = mob.dx * delta
-  mob.yoff = mob.dy * delta
+  mob.xoff = math.floor(mob.dx * delta)
+  mob.yoff = math.floor(mob.dy * delta)
 end
 
 
@@ -86,11 +86,13 @@ local function move(rock, map, player, gameUi)
     -- a mover?
     local mob = gameUi.swarm.get(nx, ny)
     if mob then
-      gameUi.explode(nx, ny, mob.type)    
+      gameUi.explode(nx, ny, mob.type)
+      return
     end
     local mob = gameUi.swarm.get(x, y)
     if mob then
       gameUi.explode(x, y, mob.type)
+      return
     end
   end  
 
@@ -120,6 +122,11 @@ local function move(rock, map, player, gameUi)
       rock.dx = 1
       rock.dy = 0
     end
+  end  
+
+  -- moving rocks  must block the destination for other rocks to move into
+  if rock.dx ~= 0 or rock.dy ~= 0 then
+    map.setCell(rock.x + rock.dx, rock.y + rock.dy, map.M_BLOCKER)
   end
   
 end
@@ -135,25 +142,19 @@ local function update(time, dt, player, gameUi)
     for i, rock in ipairs(rocks.mobs) do
       
       if rock.dx ~= 0 or rock.dy ~= 0 then
-        -- sanity check - is cell still empty?
-        if isEmptyCell(rock.x + rock.dx, rock.y + rock.dy, player) then
-          map.setCell(rock.x, rock.y, map.M_SPACE)
-          rock.x = rock.x + rock.dx
-          rock.y = rock.y + rock.dy
-          map.setCell(rock.x, rock.y, rock.type)
-          
-          -- check cell below, if we hit something?
-          if not isEmptyCell(rock.x, rock.y + 1, player) then
-            if rock.type == map.M_ROCK then
-              sounds.randplay(sounds.rockfall, 1, 0.1)
-            else
-              sounds.randplay(sounds.gemfall, 1, 0.1)
-            end
+
+      map.setCell(rock.x, rock.y, map.M_SPACE)
+        rock.x = rock.x + rock.dx
+        rock.y = rock.y + rock.dy
+        map.setCell(rock.x, rock.y, rock.type)
+        
+        -- check cell below, if we hit something?
+        if not isEmptyCell(rock.x, rock.y + 1, player) then
+          if rock.type == map.M_ROCK then
+            sounds.randplay(sounds.rockfall, 1, 0.1)
+          else
+            sounds.randplay(sounds.gemfall, 1, 0.1)
           end
-        else
-          print("Sanity check failed, rock must bounce back")
-          rock.dx = 0
-          rock.dy = 0
         end
         slide(rock, 0)
       end
@@ -165,22 +166,8 @@ local function update(time, dt, player, gameUi)
     
   else
     for i, rock in ipairs(rocks.mobs) do
-
-      if isEmptyCell(rock.x + rock.dx, rock.y + rock.dy, player) then
-        if rock.dx ~= 0 or rock.dy ~= 0 then    
-          slide(rock, rocks.delta, player)
-        end
-      else
-        print("Slide sanity check failed, rock must bounce back")
-        rock.dx = 0
-        rock.dy = 0
-        rock.xoff = 0
-        rock.yoff = 0    
-      end
-      
-      if rock.dx ~= 0 and rock.dy ~= 0 then    
-        print("Illegal diagonal move for rock at " .. rock.x .. " " .. rock.y)
-        print("Illegal diagonal move for rock with " .. rock.dx .. " " .. rock.dy)
+      if rock.dx ~= 0 or rock.dy ~= 0 then    
+        slide(rock, rocks.delta, player)
       end
     end    
   end

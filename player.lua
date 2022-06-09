@@ -1,7 +1,40 @@
 local player = {}
 
+local function push(map, time, dx, dy, rocks)
+  -- are we pushing already?
+  if player.push > 0 then
+    -- did we push long enough?
+    if time - player.push > 1.0 then
+      local nx = player.x + dx
+      local ny = player.y + dy
+      
+      -- is there pace to push into?
+      if map.getCell(nx + dx, ny + dy) == map.M_SPACE then
+        -- update rock data
+        local rock = rocks.get(nx, ny)
+        rock.x = nx + dx
+        rock.y = ny + dy
 
-local function go(time, dx, dy)
+        -- update map data
+        map.setCell(nx, ny, map.M_SPACE)
+        map.setCell(rock.x, rock.y, map.M_ROCK)
+        
+        sounds.randplay(sounds.walk, 0.7, 0.05)
+        
+        -- prepare for a new push
+        player.push = 0
+        player.pushdir = 0
+      end      
+    end
+  else
+    -- new pushing attempt
+    player.push = time
+    player.pushdir = dx
+  end
+end
+
+
+local function go(time, dx, dy, rocks)
   local map = player.map
   
   -- is the move possible?
@@ -18,7 +51,11 @@ local function go(time, dx, dy)
     player.dy = dy
     player.xoff = 0
     player.yoff = 0
-    player.time = time  
+    player.time = time
+    player.push = 0
+    player.pushdir = 0    
+  elseif cell == map.M_ROCK then
+    push(map, time, dx, dy, rocks)
   end
 end
 
@@ -37,6 +74,10 @@ local function load(map)
   
   -- dead
   quads[12] = love.graphics.newQuad(0*w, 0*w, w, w, 12*w, 2*w)
+
+  -- idle
+  quads[13] = love.graphics.newQuad(1*w, 0*w, w, w, 12*w, 2*w)
+
   
   player.sprites = image
   player.quads = quads
@@ -52,6 +93,8 @@ local function load(map)
   player.xoff = 0
   player.yoff = 0
   player.time = 0
+  player.push = 0
+  player.pushdir = 0    
   
   player.diamonds =
   {
@@ -99,14 +142,30 @@ local function update(time, dt, rocks)
     player.xoff = player.dx * delta
     player.yoff = player.dy * delta
   end
+  
 end
 
 
-local function draw(x, y)
+local function draw(time, x, y)
   if player.alive then
-  
-  
-    love.graphics.draw(player.sprites, player.quads[4 + player.dx*4], 
+    local delta = math.floor((time - player.time) * 20)
+    local frame = 13 - 4
+    
+    -- are we moving horizontally
+    local base = player.dx + player.pushdir
+    if base ~= 0 then
+      frame = delta % 2
+    end
+    
+    -- vertical move?
+    if player.dy < 0 then
+      frame = 2 + delta % 2
+    end
+    if player.dy > 0 then
+      frame = 0 + delta % 2
+    end
+    
+    love.graphics.draw(player.sprites, player.quads[4 + base*4 + frame], 
                        x, y, 
                        0, 1, 1, 0, 0, 0, 0)
   else

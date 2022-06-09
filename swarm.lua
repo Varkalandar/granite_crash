@@ -95,7 +95,8 @@ local function move(mob, map)
     -- print("turn " .. i .. " x=" .. nx  .. " y=" .. ny .. " cell=" .. cell)
     
     -- check map at desired destination
-    if cell == map.M_SPACE then
+    if cell == map.M_SPACE or
+       cell == map.M_BLOCKER then
       mob.x = nx
       mob.y = ny
       mob.dx = dx

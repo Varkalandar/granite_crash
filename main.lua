@@ -15,6 +15,8 @@ local time = 0
 -- all init code goes here
 function love.load()
   love.window.setVSync(1)
+  love.window.setTitle("Granite Crash alpha v0.01")
+  love.window.setIcon(love.image.newImageData("resources/gfx/icon.png"))
 
   sounds.load()
   map.load()
