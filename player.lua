@@ -1,3 +1,10 @@
+-- 
+-- "Granite Crash" player handling
+--
+-- Author: Hj. Malthaner
+-- Date: 2022/06/06
+--
+
 local player = {}
 
 local function push(map, time, dx, dy, rocks)

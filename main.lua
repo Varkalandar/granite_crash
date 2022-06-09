@@ -1,3 +1,10 @@
+-- 
+-- "Granite Crash" startup file
+--
+-- Author: Hj. Malthaner
+-- Date: 2022/06/06
+--
+
 sounds = require("sounds")
 
 
@@ -28,27 +35,18 @@ end
 -- the work that has to be done before each frame can be drawn
 -- dt is a float, measuring in seconds
 function love.update(dt)
-  time = time + dt
-  
-  -- print("time=" .. time)
-  
+  time = time + dt 
   ui.update(time, dt)
 end
+
 
 -- draw the frame
 function love.draw()
   ui.draw()
-
-
-  --love.graphics.print("Hello World!", 100, 100)
-  --love.graphics.print("Time elapsed: " .. time, 100, 120)
-  
-  --love.graphics.rectangle("line", 100-10, 100-10, 200, 80)
 end
 
 
 function love.wheelmoved(dx, dy)
-  -- not used at the moment
 end
 
 

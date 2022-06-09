@@ -1,3 +1,10 @@
+-- 
+-- "Granite Crash" map data and display
+--
+-- Author: Hj. Malthaner
+-- Date: 2022/06/06
+--
+
 local ffi = require("ffi")
 
 local map = 

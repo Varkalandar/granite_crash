@@ -1,3 +1,10 @@
+-- 
+-- "Granite Crash" rocks handling
+--
+-- Author: Hj. Malthaner
+-- Date: 2022/06/06
+--
+
 local rocks = {}
 
 

@@ -1,3 +1,10 @@
+-- 
+-- "Granite Crash" critter swarm handling
+--
+-- Author: Hj. Malthaner
+-- Date: 2022/06/06
+--
+
 local swarm = {}
 
 
