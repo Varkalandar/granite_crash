@@ -28,7 +28,6 @@ function love.load()
   sounds.load()
   map.load()
   gameUi.load(map)
-  editorUi.load(map)
 end
 
 
@@ -46,7 +45,23 @@ function love.draw()
 end
 
 
+local function switchToEditor()
+  editorUi.load(map)
+  ui = editorUi
+end
+
+
 function love.wheelmoved(dx, dy)
+end
+
+
+function love.mousepressed(mx, my, b)
+  ui.mousePressed(b, mx, my)
+end
+
+
+function love.mousereleased(mx, my, b)
+  ui.mouseReleased(b, mx, my)
 end
 
 
@@ -55,5 +70,10 @@ end
 
 
 function love.keyreleased(key, scancode, isrepeat)
+  if key == "e" then
+    switchToEditor()
+  end
+  
+  ui.keyReleased(key, scancode, isrepeat)
 end
 

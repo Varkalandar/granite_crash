@@ -145,10 +145,28 @@ local function draw(xoff, yoff)
 end
 
 
+local function drawFull(xoff, yoff)  
+  for y=0, map.rows-1 do
+    for x=0, map.columns-1 do
+      local cell = getCell(x, y)
+      
+      local quad = map.quads[cell]
+      
+      if quad then
+        love.graphics.draw(map.sprites, quad, 
+                           xoff + x*map.raster, yoff + y*map.raster, 
+                           0, 1, 1, 0, 0, 0, 0)
+      end
+    end
+  end
+end
+
+
 map.raster = 32
 map.load = load
 map.update = update
 map.draw = draw
+map.drawFull = drawFull
 
 map.getCell = getCell
 map.setCell = setCell
