@@ -22,7 +22,7 @@ local function add(x, y, c)
   
   table.insert(rocks.mobs, rock)
   
-  print("Added a type " .. c .. " rock, now having " .. #rocks.mobs .. " in the rocks")	
+  -- print("Added a type " .. c .. " rock, now having " .. #rocks.mobs .. " in the rocks")	
   return rock
 end
 

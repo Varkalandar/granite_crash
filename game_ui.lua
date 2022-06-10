@@ -27,12 +27,16 @@ local function explode(x, y, type)
       local nx = x+i
       local ny = y+j
       
-      swarm.remove(nx, ny)
-      rocks.remove(nx, ny)
-      map.setCell(nx, ny, c)
+      -- metal is indestructible
+      if map.getCell(nx, ny) ~= map.M_METAL then
       
-      if c == map.M_DIAMOND then
-        rocks.add(nx, ny, c)
+        swarm.remove(nx, ny)
+        rocks.remove(nx, ny)
+        map.setCell(nx, ny, c)
+        
+        if c == map.M_DIAMOND then
+          rocks.add(nx, ny, c)
+        end
       end
     end
   end

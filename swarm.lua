@@ -14,16 +14,16 @@ local function add(x, y, c)
 
   mover.x = x
   mover.y = y
-  mover.dx = -1
+  mover.dx = 0
   mover.dy = 0
-  mover.xoff = -31
+  mover.xoff = 0
   mover.yoff = 0
   mover.type = c
   mover.time = 0
   
   table.insert(swarm.mobs, mover)
   
-  print("Added a type " .. c .. " mover, now having " .. #swarm.mobs .. " in the swarm")	
+  -- print("Added a type " .. c .. " mover, now having " .. #swarm.mobs .. " in the swarm")	
   return mover
 end
 
@@ -67,7 +67,6 @@ local function turn_left(dx, dy)
 end
 
 
-
 local function load(map)
   swarm.mobs = {}
   swarm.map = map
@@ -76,8 +75,8 @@ end
 
 
 local function slide(mob, delta)
-  mob.xoff = mob.dx * (delta - 32)
-  mob.yoff = mob.dy * (delta - 32)
+  mob.xoff = mob.dx * delta
+  mob.yoff = mob.dy * delta
 end
 
 
@@ -86,10 +85,20 @@ local function move(mob, map)
   local dx = mob.dx
   local dy = mob.dy 
 
+  mob.x = mob.x + dx
+  mob.y = mob.y + dy
+  
+  -- is this crawler stuck?
+  if dx == 0 and dy == 0 then
+    -- try to get moving again
+    dx = -1
+  end  
+  
+  -- preturn in opposite direction
   if mob.type == map.M_BOMBER then
-    dx, dy = turn_right(dx, dy)
-  else
     dx, dy = turn_left(dx, dy)
+  else
+    dx, dy = turn_right(dx, dy)
   end
 
   for i=1, 4 do
@@ -104,17 +113,15 @@ local function move(mob, map)
     -- check map at desired destination
     if cell == map.M_SPACE or
        cell == map.M_BLOCKER then
-      mob.x = nx
-      mob.y = ny
       mob.dx = dx
       mob.dy = dy
       slide(mob, 0)
       break
     else
       if mob.type == map.M_BOMBER then
-        dx, dy = turn_left(dx, dy)
-      else
         dx, dy = turn_right(dx, dy)
+      else
+        dx, dy = turn_left(dx, dy)
       end
     end
   end

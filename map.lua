@@ -27,7 +27,7 @@ local map =
 local function getCell(x, y)
   local n = 87 + y*(map.columns+1) + x
   
-  if n >= 87 and n < 86 + (map.columns+1) * map.rows then
+  if n >= 87 and n < 87 + (map.columns+1) * map.rows then
     return map.data[n]  
   end
   
@@ -38,21 +38,19 @@ end
 local function setCell(x, y, c)
   local n = 87 + y*(map.columns+1) + x
   
-  if n >= 87 and n < 86 + (map.columns+1) * map.rows then
+  if n >= 87 and n < 87 + (map.columns+1) * map.rows then
     map.data[n] = c
   end
 end
 
 
 local function fill(x, y, c)
-
   for i=-1, 1 do
     for j=-1, 1 do
       map.setCell(x+i, y+j, c)
     end
   end
 end
-
 
 
 local function loadTiles(path)
@@ -80,33 +78,49 @@ local function loadTiles(path)
   map.quads = quads
 end
 
+local function decimal(n)
+  return (map.data[n]-48) * 10 + (map.data[n+1]-48)
+end
 
 local function loadLevel(path, filename)
   print("Loading level file " .. path .. filename)
   
   local file, size = love.filesystem.read(path..filename);
 
-  print("  read " .. size .. " bytes")
+  -- print("  read " .. size .. " bytes")
 
   local bytes = love.data.newByteData(file)  
   
-  print("  data " .. bytes:getSize() .. " bytes")
+  print("  -> " .. bytes:getSize() .. " bytes")
   
   map.level = file
   -- Löve 11.3
   -- map.data = ffi.cast('uint8_t*', bytes:getFFIPointer())
   map.data = ffi.cast('uint8_t*', bytes:getPointer())
   
-  map.columns = (map.data[81]-48) * 10 + (map.data[82]-48)
-  map.rows = (map.data[84]-48) * 10 + (map.data[85]-48)
+  map.columns = decimal(81)
+  map.rows = decimal(84)
   
-  print("Map is " .. map.columns .. "x" .. map.rows)
+  print("Map size is " .. map.columns .. "x" .. map.rows)
+  
+  map.meta = {}
+  
+  for line in map.level:gmatch(".-\n") do
+    -- table.insert(lines, line:match("[^\n]*"))    
+    -- print("-> " .. line)
+    
+    for word in line:gmatch("gems=.*") do
+      map.meta.gems = tonumber(word:sub(6))
+      print("Gems needed: " .. map.meta.gems)
+    end
+  end    
 end
 
 
 local function load()
   loadTiles("resources/gfx/")
   loadLevel("resources/maps/", "1.map")  
+  -- loadLevel("resources/maps/", "40x22.map")  
 end
 
 
@@ -114,15 +128,14 @@ local function update(time, dt)
 end
 
 
-local function draw(xoff, yoff)
-  
+local function draw(xoff, yoff)  
   for y=0, map.rows-1 do
     for x=0, map.columns-1 do
       local cell = getCell(x, y)
       
       local quad = map.quads[cell]
       
-      if(quad and cell ~= map.M_ROCK and cell ~=map.M_DIAMOND) then
+      if quad and cell ~= map.M_ROCK and cell ~=map.M_DIAMOND then
         love.graphics.draw(map.sprites, quad, 
                            xoff + x*map.raster, yoff + y*map.raster, 
                            0, 1, 1, 0, 0, 0, 0)

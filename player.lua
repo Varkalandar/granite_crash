@@ -105,7 +105,7 @@ local function load(map)
   
   player.diamonds =
   {
-    required = 40,
+    required = map.meta.gems,
     collected = 0
   }
   
