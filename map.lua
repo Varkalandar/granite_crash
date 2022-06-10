@@ -78,9 +78,11 @@ local function loadTiles(path)
   map.quads = quads
 end
 
+
 local function decimal(n)
   return (map.data[n]-48) * 10 + (map.data[n+1]-48)
 end
+
 
 local function loadLevel(path, filename)
   print("Loading level file " .. path .. filename)
@@ -96,6 +98,7 @@ local function loadLevel(path, filename)
   map.level = file
   -- Löve 11.3
   -- map.data = ffi.cast('uint8_t*', bytes:getFFIPointer())
+  map.bytes = bytes
   map.data = ffi.cast('uint8_t*', bytes:getPointer())
   
   map.columns = decimal(81)

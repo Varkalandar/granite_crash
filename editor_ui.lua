@@ -31,7 +31,7 @@ local function update(time, dt)
     local cx = math.floor((editorUi.mapx + editorUi.mx) / editorUi.map.raster) 
     local cy = math.floor((editorUi.mapy + editorUi.my) / editorUi.map.raster) 
     
-    print("mapx=" .. editorUi.mapx .. " mx=" .. editorUi.mx .. " cx=" .. cx)
+    -- print("mapx=" .. editorUi.mapx .. " mx=" .. editorUi.mx .. " cx=" .. cx)
     
     editorUi.map.setCell(cx, cy, editorUi.celltype)
   
@@ -89,6 +89,15 @@ local function mouseDragged(button, mx, my)
 end
 
 
+local function saveMap()
+  local data = editorUi.map.bytes:getString( )
+
+  local handle = assert(io.open("/tmp/map.txt", "w"))  
+  handle:write(data)
+  handle:close()
+end
+
+
 local function keyReleased(key, scancode, isrepeat)
   print("key=" .. key)
 
@@ -110,6 +119,12 @@ local function keyReleased(key, scancode, isrepeat)
 
   editorUi.celltype = celltype
   print("Setting cell type to: " .. editorUi.celltype)
+
+
+
+  if(key == "s") then
+    saveMap()
+  end
 end
 
 
