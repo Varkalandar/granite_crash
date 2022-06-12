@@ -8,19 +8,35 @@
 local player = require("player")
 local rocks = require("rocks")
 local swarm = require("swarm")
+local animations = require("animations")
 local pixfont = require("pixfont")
 
 local gameUi = {}
+
+
+local function fill(x, y, params)
+  local map = gameUi.map
+  
+  for i=-1, 1 do
+    for j=-1, 1 do
+      local nx = x+i
+      local ny = y+j
+      
+      -- metal is indestructible
+      if map.getCell(nx, ny) ~= map.M_METAL then
+        map.setCell(nx, ny, params.type)
+        rocks.add(nx, ny, params.type)
+      end
+    end
+  end
+end
 
 
 local function explode(x, y, type)
   local map = gameUi.map
   sounds.randplay(sounds.bang, 1, 0)
 
-  local c = map.M_DIAMOND  
-  if type == map.M_BOMBER then      
-    c = map.M_SPACE
-  end
+  local c = map.M_SPACE
 
   for i=-1, 1 do
     for j=-1, 1 do
@@ -29,16 +45,17 @@ local function explode(x, y, type)
       
       -- metal is indestructible
       if map.getCell(nx, ny) ~= map.M_METAL then
-      
         swarm.remove(nx, ny)
         rocks.remove(nx, ny)
         map.setCell(nx, ny, c)
-        
-        if c == map.M_DIAMOND then
-          rocks.add(nx, ny, c)
-        end
       end
     end
+  end
+
+  if type == map.M_REWARD then
+    animations.make(fill, x, y, 1, {type = map.M_DIAMOND })  
+  else
+    animations.make(nil, x, y, 1, nil)  
   end
 end
 
@@ -79,7 +96,8 @@ local function load(map)
   player.load(map)
   rocks.load(map)
   swarm.load(map)
-
+  animations.load()
+  
   gameUi.map = map
   gameUi.swarm = swarm
 
@@ -98,7 +116,8 @@ local function update(time, dt)
   player.update(time, dt, rocks)
   swarm.update(time, dt, map.C_SPEED)
   rocks.update(time, dt, player, gameUi)
-
+  animations.update(time, dt)
+  
   local vx = 0;
   local vy = 0;
 
@@ -143,13 +162,15 @@ local function draw()
   rocks.draw(xoff, yoff)
   swarm.draw(xoff, yoff)
   player.draw(gameUi.time, 400, 290)
+  animations.draw(xoff, yoff)
 
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
-  -- love.graphics.print("Diamonds: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 690, 10)
+  love.graphics.setColor(0, 0, 0, 1)
+  love.graphics.rectangle("fill", 0, 0, 800, 42)
   
   love.graphics.setColor(0.5, 1.0, 0.0, 1)
-  pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 10, 0.3, 0.3)
+  pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 5, 0.3, 0.3)
 end
 
 
