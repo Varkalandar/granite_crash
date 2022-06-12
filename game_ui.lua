@@ -168,8 +168,9 @@ local function draw()
 
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
-  love.graphics.setColor(0, 0, 0, 1)
+  -- love.graphics.setColor(0, 0, 0, 1)
   -- love.graphics.rectangle("fill", 0, 0, 800, 42)
+  love.graphics.setColor(0.5, 0.4, 0.5, 1)
   love.graphics.draw(gameUi.title, 0, 0)
   
   love.graphics.setColor(0.5, 1.0, 0.0, 1)
