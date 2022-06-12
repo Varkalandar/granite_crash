@@ -101,8 +101,10 @@ local function load(map)
   gameUi.map = map
   gameUi.swarm = swarm
 
-  -- pixfont = pixfont.init("resources/font/humanistic_128bbl")
   pixfont = pixfont.init("resources/font/sans_serif")
+  
+  gameUi.title = love.graphics.newImage("resources/gfx/title.png")  
+
   
   scanMap()
 end
@@ -167,7 +169,8 @@ local function draw()
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
   love.graphics.setColor(0, 0, 0, 1)
-  love.graphics.rectangle("fill", 0, 0, 800, 42)
+  -- love.graphics.rectangle("fill", 0, 0, 800, 42)
+  love.graphics.draw(gameUi.title, 0, 0)
   
   love.graphics.setColor(0.5, 1.0, 0.0, 1)
   pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 5, 0.3, 0.3)
