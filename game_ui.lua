@@ -63,36 +63,64 @@ end
 local function scanMap()
   local map = gameUi.map
 
-  -- scan the level for a player tile
-
-  -- print("PC=" .. pc)
-
+  -- start with fresh tables
+  swarm.mobs = {}
+  rocks.mobs = {}
+  
   for y=0, map.rows-1 do
     for x=0, map.columns-1 do
       local cell = map.getCell(x, y)
       if cell == map.M_PLAYER then
         player.x = x
         player.y = y
-		    map.setCell(x, y, map.M_SPACE)
-	    elseif cell == map.M_BOMBER then
-	      swarm.add(x, y, cell)
-		    map.setCell(x, y, map.M_SPACE)
-	    elseif cell == map.M_REWARD then
-	      swarm.add(x, y, cell)	  
         map.setCell(x, y, map.M_SPACE)
-	    elseif cell == map.M_ROCK then
-	      rocks.add(x, y, cell)	  
-	    elseif cell == map.M_DIAMOND then
-	      rocks.add(x, y, cell)	  
+      elseif cell == map.M_EXIT_LOCKED then
+        player.exit = {x=x, y=y}
+      elseif cell == map.M_BOMBER then
+        swarm.add(x, y, cell)
+        map.setCell(x, y, map.M_SPACE)
+      elseif cell == map.M_REWARD then
+        swarm.add(x, y, cell)	  
+        map.setCell(x, y, map.M_SPACE)
+      elseif cell == map.M_ROCK then
+        rocks.add(x, y, cell)	  
+      elseif cell == map.M_DIAMOND then
+        rocks.add(x, y, cell)	  
       end
     end
   end
 
   print("Found player at " .. player.x .. ", " .. player.y)
+  print("Found exit at " .. player.exit.x .. ", " .. player.exit.y)
+  
+  player.diamonds.required = map.meta.gems
+  player.diamonds.collected = 0
 end
 
 
 local function load(map)
+
+  levels =
+  {
+    "spiral.map",
+    "silos.map",
+    "40x22.map",
+    "1.map"
+  }
+
+  colors =
+  {
+    {r=0.9, g=0.9, b=0.9},
+    {r=1.0, g=0.9, b=0.5},
+    {r=1.0, g=0.7, b=0.75},
+    {r=0.85, g=0.80, b=1.0},
+  }
+  
+  gameUi.levels = levels
+  gameUi.colors = colors
+  player.level = 1
+  map.loadLevel("resources/maps/", levels[player.level]) 
+
   player.load(map)
   rocks.load(map)
   swarm.load(map)
@@ -104,8 +132,15 @@ local function load(map)
   pixfont = pixfont.init("resources/font/sans_serif")
   
   gameUi.title = love.graphics.newImage("resources/gfx/title.png")  
-
   
+  scanMap()
+end
+
+
+local function newLevel()
+  player.level = player.level + 1
+  local map = gameUi.map 
+  map.loadLevel("resources/maps/", levels[player.level])
   scanMap()
 end
 
@@ -147,6 +182,37 @@ local function update(time, dt)
   end
   
   swarm.collisions(map, player, gameUi)
+  
+  -- open the exit?
+  if player.diamonds.collected >= player.diamonds.required and
+     map.getCell(player.exit.x, player.exit.y) == map.M_EXIT_LOCKED then
+    sounds.randplay(sounds.level, 1, 0)
+    map.setCell(player.exit.x, player.exit.y, map.M_EXIT_OPEN)
+  end
+  
+  -- reached the exit?
+  if player.x == player.exit.x and player.y == player.exit.y then
+    newLevel()
+  end
+
+  -- player died?
+  if not player.alive then
+    if love.keyboard.isDown("escape") then
+      player.lives = player.lives - 1
+      player.level = player.level - 1
+      newLevel()
+      player.alive = true
+      
+    end
+  end
+  
+  
+  -- player died?
+  if player.lives < 1 then
+    player.level = 0
+    newLevel()
+    player.lives = 5
+  end
 end
 
 
@@ -158,7 +224,9 @@ local function draw()
   xoff = math.floor(xoff - player.xoff)
   yoff = math.floor(yoff - player.yoff)
 
-  love.graphics.setColor(0.9, 0.9, 0.9, 1)
+  local color = gameUi.colors[player.level]
+  
+  love.graphics.setColor(color.r, color.g, color.b, 1)
 
   gameUi.map.draw(xoff, yoff)
   rocks.draw(xoff, yoff)
@@ -175,6 +243,8 @@ local function draw()
   
   love.graphics.setColor(0.5, 1.0, 0.0, 1)
   pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 5, 0.3, 0.3)
+  pixfont:drawStringScaled("Lives: " .. player.lives, 200, 5, 0.3, 0.3)
+  pixfont:drawStringScaled("Level: " .. player.level, 400, 5, 0.3, 0.3)
 end
 
 

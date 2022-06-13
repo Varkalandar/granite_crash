@@ -13,11 +13,11 @@ local function load()
 
   local walkData = love.sound.newSoundData("resources/sfx/walk.wav")  
   sounds.walk = love.audio.newSource(walkData)
-  sounds.walk:setVolume(0.5)
+  sounds.walk:setVolume(0.3)
 
   local bangData = love.sound.newSoundData("resources/sfx/bang.wav")  
   sounds.bang = love.audio.newSource(bangData)
-  sounds.bang:setVolume(1.0)
+  sounds.bang:setVolume(0.8)
 
   local collectData = love.sound.newSoundData("resources/sfx/collect.wav")  
   sounds.pick = love.audio.newSource(collectData)
@@ -31,6 +31,9 @@ local function load()
   sounds.gemfall = love.audio.newSource(gemfallData)
   sounds.gemfall:setVolume(1.0)
 
+  local levelData = love.sound.newSoundData("resources/sfx/doindoindoin.wav")  
+  sounds.level = love.audio.newSource(levelData)
+  sounds.level:setVolume(1.0)
 end
 
 

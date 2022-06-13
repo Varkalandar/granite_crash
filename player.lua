@@ -42,27 +42,31 @@ end
 
 
 local function go(time, dx, dy, rocks)
-  local map = player.map
+  if player.alive then
   
-  -- is the move possible?
-  local nx = player.x + dx
-  local ny = player.y + dy
-  
-  local cell = map.getCell(nx, ny)
-  
-  if cell == map.M_SPACE or
-     cell == map.M_EARTH or
-     cell == map.M_DIAMOND then
-  
-    player.dx = dx
-    player.dy = dy
-    player.xoff = 0
-    player.yoff = 0
-    player.time = time
-    player.push = 0
-    player.pushdir = 0    
-  elseif cell == map.M_ROCK then
-    push(map, time, dx, dy, rocks)
+    local map = player.map
+    
+    -- is the move possible?
+    local nx = player.x + dx
+    local ny = player.y + dy
+    
+    local cell = map.getCell(nx, ny)
+    
+    if cell == map.M_SPACE or
+       cell == map.M_EARTH or
+       cell == map.M_EXIT_OPEN or
+       cell == map.M_DIAMOND then
+    
+      player.dx = dx
+      player.dy = dy
+      player.xoff = 0
+      player.yoff = 0
+      player.time = time
+      player.push = 0
+      player.pushdir = 0    
+    elseif cell == map.M_ROCK then
+      push(map, time, dx, dy, rocks)
+    end
   end
 end
 
@@ -89,6 +93,7 @@ local function load(map)
   player.sprites = image
   player.quads = quads
   player.alive = true
+  player.lives = 5
   
   -- player map position
   player.x = 0
@@ -118,7 +123,7 @@ local function collect(rocks)
   local cell = map.getCell(player.x, player.y)   
 
   if cell == map.M_DIAMOND then
-    sounds.randplay(sounds.pick, 1, 0.1)
+    sounds.randplay(sounds.pick, 2, 0.1)
     local diamonds = player.diamonds
     diamonds.collected = diamonds.collected + 1
     rocks.remove(player.x, player.y, map.M_SPACE)

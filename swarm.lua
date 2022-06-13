@@ -154,7 +154,7 @@ local function draw(xoff, yoff)
   local sprites = swarm.map.sprites
   local quads = swarm.map.quads
 
-  local size = 0.5 + (1.0 + math.sin(swarm.time * swarm.map.C_SPEED * 2 * math.pi)) * 0.25
+  local size = 0.5 + (1.0 + math.sin(swarm.time * 30.0 / math.pi)) * 0.25
   local soff = math.floor((32.0 - size*32.0) * 0.5)
   for i, mob in ipairs(swarm.mobs) do
     love.graphics.draw(sprites, quads[mob.type], 

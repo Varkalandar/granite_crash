@@ -20,6 +20,8 @@ local map =
   M_BOMBER = string.byte("W"),
   M_REWARD = string.byte("X"),
   M_PLAYER = string.byte("P"),
+  M_EXIT_LOCKED = string.byte("2"),
+  M_EXIT_OPEN = string.byte("3"),
   M_BLOCKER = 127
 }
 
@@ -62,6 +64,9 @@ local function loadTiles(path)
   quads[map.M_METAL] = love.graphics.newQuad(8*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_EARTH] = love.graphics.newQuad(4*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_PLAYER] = love.graphics.newQuad(1*w, 0*w, w, w, 12*w, 2*w)
+  quads[map.M_EXIT_LOCKED] = love.graphics.newQuad(6*w, 1*w, w, w, 12*w, 2*w)
+  quads[map.M_EXIT_OPEN] = love.graphics.newQuad(7*w, 1*w, w, w, 12*w, 2*w)
+  quads[map.M_EXIT_OPEN+1] = love.graphics.newQuad(8*w, 1*w, w, w, 12*w, 2*w)
   quads[map.M_ROCK] = love.graphics.newQuad(5*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_DIAMOND] = love.graphics.newQuad(6*w, 0*w, w, w, 12*w, 2*w)
   quads[map.M_WALL] = love.graphics.newQuad(7*w, 0*w, w, w, 12*w, 2*w)
@@ -122,12 +127,13 @@ end
 
 local function load()
   loadTiles("resources/gfx/")
-  loadLevel("resources/maps/", "1.map")  
+  -- loadLevel("resources/maps/", "1.map")  
   -- loadLevel("resources/maps/", "40x22.map")  
 end
 
 
 local function update(time, dt)
+  map.time = time
 end
 
 
@@ -139,6 +145,13 @@ local function draw(xoff, yoff)
       local quad = map.quads[cell]
       
       if quad and cell ~= map.M_ROCK and cell ~=map.M_DIAMOND then
+      
+        -- make exit blink
+        if cell == map.M_EXIT_OPEN then
+          local offset = math.floor(map.time * 10) % 2
+          quad = map.quads[cell+offset]
+        end
+        
         love.graphics.draw(map.sprites, quad, 
                            xoff + x*map.raster, yoff + y*map.raster, 
                            0, 1, 1, 0, 0, 0, 0)
@@ -174,5 +187,6 @@ map.drawFull = drawFull
 map.getCell = getCell
 map.setCell = setCell
 map.fill = fill
+map.loadLevel = loadLevel
 
 return map
