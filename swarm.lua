@@ -160,9 +160,8 @@ local function draw(xoff, yoff)
   for i, mob in ipairs(swarm.mobs) do
   
   
-    if false then
+    if false or mob.type == map.M_REWARD then
       local frame = math.min(3, math.floor(swarm.delta / 8))
-      print("ping")
   
       love.graphics.draw(sprites, quads[mob.type + frame], 
                          mob.x*32 + mob.xoff + xoff, 
