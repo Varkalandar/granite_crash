@@ -150,18 +150,30 @@ end
 
 
 local function draw(xoff, yoff)
-
+  local map = swarm.map
   local sprites = swarm.map.sprites
   local quads = swarm.map.quads
 
   local size = 0.5 + (1.0 + math.sin(swarm.time * 30.0 / math.pi)) * 0.25
   local soff = math.floor((32.0 - size*32.0) * 0.5)
+
   for i, mob in ipairs(swarm.mobs) do
-    love.graphics.draw(sprites, quads[mob.type], 
-                       mob.x*32 + mob.xoff + xoff + soff, 
-                       mob.y*32 + mob.yoff + yoff + soff, 
-                       0, size, size, 0, 0, 0, 0)
-    
+  
+  
+    if false then
+      local frame = math.min(3, math.floor(swarm.delta / 8))
+      print("ping")
+  
+      love.graphics.draw(sprites, quads[mob.type + frame], 
+                         mob.x*32 + mob.xoff + xoff, 
+                         mob.y*32 + mob.yoff + yoff, 
+                         0, nil, nil, 0, 0, 0, 0)
+    else
+      love.graphics.draw(sprites, quads[mob.type], 
+                         mob.x*32 + mob.xoff + xoff + soff, 
+                         mob.y*32 + mob.yoff + yoff + soff, 
+                         0, size, size, 0, 0, 0, 0)
+    end
   end
 end
 

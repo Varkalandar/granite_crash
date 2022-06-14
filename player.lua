@@ -94,6 +94,7 @@ local function load(map)
   player.quads = quads
   player.alive = true
   player.lives = 5
+  player.score = 0
   
   -- player map position
   player.x = 0
@@ -127,6 +128,7 @@ local function collect(rocks)
     local diamonds = player.diamonds
     diamonds.collected = diamonds.collected + 1
     rocks.remove(player.x, player.y, map.M_SPACE)
+    player.score = player.score + 50
   elseif cell == map.M_EARTH then
     sounds.randplay(sounds.walk, 1, 0.1)
   end

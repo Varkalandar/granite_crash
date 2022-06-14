@@ -94,11 +94,13 @@ local function move(rock, map, player, gameUi)
     local mob = gameUi.swarm.get(nx, ny)
     if mob then
       gameUi.explode(nx, ny, mob.type)
+      player.score = player.score + 25
       return
     end
     local mob = gameUi.swarm.get(x, y)
     if mob then
       gameUi.explode(x, y, mob.type)
+      player.score = player.score + 25
       return
     end
   end  

@@ -245,6 +245,13 @@ local function draw()
   pixfont:drawStringScaled("Gems: " .. player.diamonds.collected .. "/" .. player.diamonds.required, 10, 5, 0.3, 0.3)
   pixfont:drawStringScaled("Lives: " .. player.lives, 200, 5, 0.3, 0.3)
   pixfont:drawStringScaled("Level: " .. player.level, 400, 5, 0.3, 0.3)
+  pixfont:drawStringScaled("Score: " .. player.score, 600, 5, 0.3, 0.3)
+
+  if player.lives <= 1 and not player.alive then
+    love.graphics.setColor(1.9, 0.5, 0.0, 1)
+    pixfont:drawStringScaled("Game Over", 170, 200, 1, 1)
+  end  
+  
 end
 
 
