@@ -78,15 +78,15 @@ local function loadTiles(path)
   quads[map.M_REWARD] = love.graphics.newQuad(9*w, 0*w, w-1, w-1, sprites)
   
   
-  -- quads[map.M_REWARD] = love.graphics.newQuad(2*w, 1*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+1] = love.graphics.newQuad(3*w, 1*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+2] = love.graphics.newQuad(4*w, 1*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+3] = love.graphics.newQuad(5*w, 1*w, w-1, w-1, sprites)
+  quads[map.M_REWARD+0] = love.graphics.newQuad(0*w, 3*w, w-1, w-1, sprites)
+  quads[map.M_REWARD+1] = love.graphics.newQuad(1*w, 3*w, w-1, w-1, sprites)
+  quads[map.M_REWARD+2] = love.graphics.newQuad(2*w, 3*w, w-1, w-1, sprites)
+  quads[map.M_REWARD+3] = love.graphics.newQuad(3*w, 3*w, w-1, w-1, sprites)
 
-  quads[map.M_REWARD] = love.graphics.newQuad(4*w, 2*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+1] = love.graphics.newQuad(5*w, 2*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+2] = love.graphics.newQuad(6*w, 2*w, w-1, w-1, sprites)
-  quads[map.M_REWARD+3] = love.graphics.newQuad(7*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD] = love.graphics.newQuad(4*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+1] = love.graphics.newQuad(5*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+2] = love.graphics.newQuad(6*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+3] = love.graphics.newQuad(7*w, 2*w, w-1, w-1, sprites)
 
   -- debug
   -- quads[map.M_BLOCKER] = love.graphics.newQuad(0*w, 1*w, w, w, sprites)

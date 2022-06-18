@@ -131,7 +131,7 @@ local function load(map)
 
   pixfont = pixfont.init("resources/font/sans_serif")
   
-  gameUi.title = love.graphics.newImage("resources/gfx/title.png")  
+  gameUi.title = love.graphics.newImage("resources/gfx/header.png")  
   
   scanMap()
 end
@@ -267,6 +267,10 @@ local function mouseDragged(button, mx, my)
 end
 
 
+local function keyPressed(key, scancode, isrepeat)
+end
+
+
 local function keyReleased(key, scancode, isrepeat)
 end
 
@@ -282,5 +286,6 @@ gameUi.mousePressed = mousePressed
 gameUi.mouseReleased = mouseReleased
 gameUi.mouseDragged = mouseDragged
 gameUi.keyReleased = keyReleased
+gameUi.keyPressed = keyPressed
 
 return gameUi

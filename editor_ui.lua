@@ -98,6 +98,10 @@ local function saveMap()
 end
 
 
+local function keyPressed(key, scancode, isrepeat)
+end
+
+
 local function keyReleased(key, scancode, isrepeat)
   print("key=" .. key)
 
@@ -135,6 +139,7 @@ editorUi.draw = draw
 editorUi.mousePressed = mousePressed
 editorUi.mouseReleased = mouseReleased
 editorUi.mouseDragged = mouseDragged
+editorUi.keyPressed = keyPressed
 editorUi.keyReleased = keyReleased
 
 

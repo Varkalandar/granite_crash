@@ -11,23 +11,37 @@ sounds = require("sounds")
 local map = require("map")
 local gameUi = require("game_ui")
 local editorUi = require("editor_ui")
+local titleUi = require("title_ui")
+
 
 -- the currently active user interface
-local ui = gameUi
+local ui = titleUi
 
 -- game time
 local time = 0 
 
 
+local function switchToEditor()
+  editorUi.load(map)
+  ui = editorUi
+end
+
+
+local function switchToGame()
+  ui = gameUi
+end
+
+
 -- all init code goes here
 function love.load()
   love.window.setVSync(1)
-  love.window.setTitle("Granite Crash alpha v0.02")
+  love.window.setTitle("Granite Crash alpha v0.03")
   love.window.setIcon(love.image.newImageData("resources/gfx/icon.png"))
 
   sounds.load()
   map.load()
   gameUi.load(map)
+  titleUi.load(switchToGame)
 end
 
 
@@ -45,10 +59,6 @@ function love.draw()
 end
 
 
-local function switchToEditor()
-  editorUi.load(map)
-  ui = editorUi
-end
 
 
 function love.wheelmoved(dx, dy)
@@ -66,6 +76,7 @@ end
 
 
 function love.keypressed(key, scancode, isrepeat)
+  ui.keyPressed(key, scancode, isrepeat)
 end
 
 

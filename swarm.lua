@@ -75,8 +75,8 @@ end
 
 
 local function slide(mob, delta)
-  mob.xoff = mob.dx * delta
-  mob.yoff = mob.dy * delta
+  mob.xoff = math.floor(mob.dx * delta)
+  mob.yoff = math.floor(mob.dy * delta)
 end
 
 
