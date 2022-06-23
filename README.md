@@ -1,2 +1,2 @@
 # granite_crash
-A remake of an old, old game
+A little game to collect gems in the spirit of the old "Boulder Dash" game.
