@@ -56,7 +56,8 @@ end
 
 
 local function loadTiles(path)
-  local sprites = love.graphics.newImage(path .. "sprites.png")
+  -- local sprites = love.graphics.newImage(path .. "sprites.png")
+  local sprites = love.graphics.newImage(path .. "sprites_dark.png")
   
   local quads = {}
   local w = 32;
@@ -83,10 +84,10 @@ local function loadTiles(path)
   quads[map.M_REWARD+2] = love.graphics.newQuad(2*w, 3*w, w-1, w-1, sprites)
   quads[map.M_REWARD+3] = love.graphics.newQuad(3*w, 3*w, w-1, w-1, sprites)
 
-  -- quads[map.M_REWARD] = love.graphics.newQuad(4*w, 2*w, w-1, w-1, sprites)
-  -- quads[map.M_REWARD+1] = love.graphics.newQuad(5*w, 2*w, w-1, w-1, sprites)
-  -- quads[map.M_REWARD+2] = love.graphics.newQuad(6*w, 2*w, w-1, w-1, sprites)
-  -- quads[map.M_REWARD+3] = love.graphics.newQuad(7*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+0] = love.graphics.newQuad(0*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+1] = love.graphics.newQuad(1*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+2] = love.graphics.newQuad(2*w, 2*w, w-1, w-1, sprites)
+  -- quads[map.M_REWARD+3] = love.graphics.newQuad(3*w, 2*w, w-1, w-1, sprites)
 
   -- debug
   -- quads[map.M_BLOCKER] = love.graphics.newQuad(0*w, 1*w, w, w, sprites)
@@ -142,8 +143,6 @@ end
 
 local function load()
   loadTiles("resources/gfx/")
-  -- loadLevel("resources/maps/", "1.map")  
-  -- loadLevel("resources/maps/", "40x22.map")  
 end
 
 

@@ -71,6 +71,7 @@ local function load(map)
   swarm.mobs = {}
   swarm.map = map
   swarm.time = 0
+  swarm.delta = 0
 end
 
 
@@ -129,7 +130,8 @@ end
 
 
 local function update(time, dt, speed)
-  swarm.delta = (time - swarm.time) * speed 
+  swarm.delta = swarm.delta + dt * speed 
+  swarm.time = time    
 
   -- big step time?
   if swarm.delta > 31 then	
@@ -139,13 +141,13 @@ local function update(time, dt, speed)
       move(mob, map)
     end
     
-    swarm.time = time
-    
+    swarm.delta = 0
   else
     for i, mob in ipairs(swarm.mobs) do
       slide(mob, swarm.delta)
     end    
   end
+
 end
 
 
@@ -161,7 +163,7 @@ local function draw(xoff, yoff)
   
   
     if false or mob.type == map.M_REWARD then
-      local frame = math.min(3, math.floor(swarm.delta / 8))
+      local frame = math.floor(swarm.time * 12) % 4
   
       love.graphics.draw(sprites, quads[mob.type + frame], 
                          mob.x*32 + mob.xoff + xoff, 

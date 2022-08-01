@@ -35,7 +35,7 @@ end
 -- all init code goes here
 function love.load()
   love.window.setVSync(1)
-  love.window.setTitle("Granite Crash alpha v0.03")
+  love.window.setTitle("Granite Crash alpha v0.04")
   love.window.setIcon(love.image.newImageData("resources/gfx/icon.png"))
 
   sounds.load()

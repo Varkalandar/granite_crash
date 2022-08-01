@@ -104,6 +104,7 @@ local function load(map)
   {
     "spiral.map",
     "silos.map",
+    "bottles.map",
     "40x22.map",
     "1.map"
   }
@@ -112,6 +113,7 @@ local function load(map)
   {
     {r=0.9, g=0.9, b=0.9},
     {r=1.0, g=0.9, b=0.5},
+    {r=0.7, g=0.9, b=1.0},
     {r=1.0, g=0.7, b=0.75},
     {r=0.85, g=0.80, b=1.0},
   }
