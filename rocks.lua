@@ -115,7 +115,9 @@ local function move(rock, map, player, gameUi)
   if isEmptyCell(x, y+1, player) then
     rock.dx = 0
     rock.dy = 1
-  elseif cell == map.M_ROCK or cell == map.M_DIAMOND then
+  elseif cell == map.M_ROCK or 
+         cell == map.M_DIAMOND or
+         cell == map.M_WALL then
     -- instable position  
     -- check for earth left or right below
     local l = isEmptyCell(x-1, y, player)
