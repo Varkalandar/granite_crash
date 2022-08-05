@@ -16,9 +16,10 @@ local gameUi = {}
 
 local function fill(x, y, params)
   local map = gameUi.map
+  local r = params.radius
   
-  for i=-1, 1 do
-    for j=-1, 1 do
+  for i=-r, r do
+    for j=-r, r do
       local nx = x+i
       local ny = y+j
       
@@ -53,7 +54,7 @@ local function explode(x, y, type)
   end
 
   if type == map.M_REWARD then
-    animations.make(fill, x, y, 1, {type = map.M_DIAMOND })  
+    animations.make(fill, x, y, 1, {radius=1, type=map.M_DIAMOND })  
   else
     animations.make(nil, x, y, 1, nil)  
   end
@@ -104,6 +105,7 @@ local function load(map)
   {
     "spiral.map",
     "silos.map",
+    "vault.map",
     "bottles.map",
     "40x22.map",
     "1.map"
@@ -113,6 +115,7 @@ local function load(map)
   {
     {r=0.9, g=0.9, b=0.9},
     {r=1.0, g=0.9, b=0.5},
+    {r=0.95, g=0.93, b=0.90},
     {r=0.7, g=0.9, b=1.0},
     {r=1.0, g=0.7, b=0.75},
     {r=0.85, g=0.80, b=1.0},
@@ -151,7 +154,7 @@ local function update(time, dt)
   gameUi.time = time
   
   local map = gameUi.map 
-  map.update(time, dt)
+  map.update(gameUi, time, dt, player)
   player.update(time, dt, rocks)
   swarm.update(time, dt, map.C_SPEED)
   rocks.update(time, dt, player, gameUi)
@@ -230,11 +233,12 @@ local function draw()
   
   love.graphics.setColor(color.r, color.g, color.b, 1)
 
-  gameUi.map.draw(xoff, yoff)
+  local map = gameUi.map
+  map.draw(xoff, yoff)
   rocks.draw(xoff, yoff)
   swarm.draw(xoff, yoff)
   player.draw(gameUi.time, 400, 290)
-  animations.draw(xoff, yoff)
+  animations.draw(xoff, yoff, map)
 
   -- love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
@@ -282,6 +286,7 @@ gameUi.load = load
 gameUi.update = update
 gameUi.draw = draw
 
+gameUi.fill = fill
 gameUi.explode = explode
 
 gameUi.mousePressed = mousePressed

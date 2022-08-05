@@ -58,7 +58,7 @@ local function update(time, dt)
 end
 
 
-local function draw(xoff, yoff)
+local function draw(xoff, yoff, map)
 
   local mode, alphamode = love.graphics.getBlendMode( )
   love.graphics.setBlendMode("add")
@@ -69,13 +69,16 @@ local function draw(xoff, yoff)
       
       for i=-1, 1 do
         for j=-1, 1 do
-          local nx = data.x*32 + xoff + i*32
-          local ny = data.y*32 + yoff + j*32
-      
-          love.graphics.draw(animations.sprites, quad, 
-                     nx, 
-                     ny, 
-                     0, nil, nil, 0, 0, 0, 0)
+          local cell = map.getCell(data.x+i, data.y+j)
+          if cell ~= map.M_METAL then
+            local nx = data.x*32 + xoff + i*32
+            local ny = data.y*32 + yoff + j*32
+        
+            love.graphics.draw(animations.sprites, quad, 
+                       nx, 
+                       ny, 
+                       0, nil, nil, 0, 0, 0, 0)
+          end
         end
       end
     end

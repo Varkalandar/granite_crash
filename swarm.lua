@@ -53,6 +53,9 @@ local function collisions(map, player, gameUi)
       player.alive = false
       gameUi.explode(mob.x, mob.y, mob.type)
     end
+    if map.getCell(mob.x, mob.y) == map.M_AMOEBA then
+      gameUi.explode(mob.x, mob.y, mob.type)
+    end
   end
 end
 
@@ -113,10 +116,13 @@ local function move(mob, map)
     
     -- check map at desired destination
     if cell == map.M_SPACE or
+       cell == map.M_AMOEBA or
        cell == map.M_BLOCKER then
+       
       mob.dx = dx
       mob.dy = dy
       slide(mob, 0)
+      
       break
     else
       if mob.type == map.M_BOMBER then
@@ -170,10 +176,12 @@ local function draw(xoff, yoff)
                          mob.y*32 + mob.yoff + yoff, 
                          0, nil, nil, 0, 0, 0, 0)
     else
-      love.graphics.draw(sprites, quads[mob.type], 
-                         mob.x*32 + mob.xoff + xoff + soff, 
-                         mob.y*32 + mob.yoff + yoff + soff, 
-                         0, size, size, 0, 0, 0, 0)
+      local frame = 7 - (math.floor(swarm.time * 24) % 8)
+  
+      love.graphics.draw(sprites, quads[mob.type + frame], 
+                         mob.x*32 + mob.xoff + xoff, 
+                         mob.y*32 + mob.yoff + yoff, 
+                         0, nil, nil, 0, 0, 0, 0)
     end
   end
 end
